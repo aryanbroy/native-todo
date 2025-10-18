@@ -9,7 +9,7 @@ export default function Index() {
         alignItems: 'center',
       }}
     >
-      <Text>Niga there is a screen</Text>
+      <Text>Home page</Text>
     </View>
   );
 }
