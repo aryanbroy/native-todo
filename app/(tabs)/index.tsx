@@ -1,11 +1,13 @@
 import { createSettingsStyles } from '@/assets/styles/settings.styles';
 import useTheme from '@/hooks/useTheme';
 import { Ionicons } from '@expo/vector-icons';
-import { Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Progress, ProgressFilledTrack } from '@/components/ui/progress';
+// import { Center } from '@/components/ui/center';
 
 export default function Index() {
-  const { toggleDarkMode, colors } = useTheme();
+  const { colors } = useTheme();
   const styles = createSettingsStyles(colors);
 
   return (
@@ -27,26 +29,34 @@ export default function Index() {
           </View>
         </View>
       </View>
-      <TouchableOpacity onPress={() => toggleDarkMode()}>
-        <Text>Toggle Mode</Text>
-      </TouchableOpacity>
+      <View style={homeStyles.progressContainer}>
+        <View style={{ flex: 1, marginRight: 12 }}>
+          <Progress value={50} size="md" orientation="horizontal">
+            <ProgressFilledTrack className="bg-emerald-500" />
+          </Progress>
+        </View>
+
+        <Text className="text-emerald-500" style={homeStyles.percentage}>
+          50%
+        </Text>
+      </View>
+      {/* <TouchableOpacity onPress={() => toggleDarkMode()}> */}
+      {/*   <Text>Toggle Mode</Text> */}
+      {/* </TouchableOpacity> */}
     </LinearGradient>
   );
 }
 
-// const styles = StyleSheet.create({
-//   view: {
-//     flex: 1,
-//     // justifyContent: 'center',
-//     // alignItems: 'center',
-//   },
-//   header: {
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//     // justifyContent: 'center',
-//   },
-//   heading: {
-//     fontSize: 45,
-//     fontWeight: 'bold',
-//   },
-// });
+const homeStyles = StyleSheet.create({
+  progressContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginHorizontal: 20,
+  },
+  percentage: {
+    fontSize: 18,
+    fontWeight: '800',
+    marginLeft: 5,
+  },
+});
