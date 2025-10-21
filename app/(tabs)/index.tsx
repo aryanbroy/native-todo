@@ -1,14 +1,15 @@
 import { createSettingsStyles } from '@/assets/styles/settings.styles';
 import useTheme from '@/hooks/useTheme';
 import { Ionicons } from '@expo/vector-icons';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TextInput, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Progress, ProgressFilledTrack } from '@/components/ui/progress';
-// import { Center } from '@/components/ui/center';
+import { createHomeStyles } from '@/assets/styles/home.styles';
 
 export default function Index() {
   const { colors } = useTheme();
   const styles = createSettingsStyles(colors);
+  const hStyles = createHomeStyles(colors);
 
   return (
     <LinearGradient
@@ -40,6 +41,29 @@ export default function Index() {
           50%
         </Text>
       </View>
+      <View style={homeStyles.inputContainer}>
+        {/* <Input */}
+        {/*   variant="outline" */}
+        {/*   size="xl" */}
+        {/*   isDisabled={false} */}
+        {/*   isInvalid={false} */}
+        {/*   isReadOnly={false} */}
+        {/*   style={{ flex: 1 }} */}
+        {/* > */}
+        {/*   <InputField placeholder="Enter Text here..." /> */}
+        {/* </Input> */}
+        <TextInput
+          style={hStyles.input}
+          placeholder="Enter todo here"
+          placeholderTextColor={colors.textMuted}
+        />
+        <LinearGradient
+          colors={colors.gradients.muted}
+          style={hStyles.addButton}
+        >
+          <Ionicons name="add-outline" size={24} color={'#ffffff'} />
+        </LinearGradient>
+      </View>
       {/* <TouchableOpacity onPress={() => toggleDarkMode()}> */}
       {/*   <Text>Toggle Mode</Text> */}
       {/* </TouchableOpacity> */}
@@ -53,10 +77,18 @@ const homeStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginHorizontal: 20,
+    marginBottom: 20,
   },
   percentage: {
     fontSize: 18,
     fontWeight: '800',
     marginLeft: 5,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    marginHorizontal: 20,
+    gap: 20,
   },
 });
