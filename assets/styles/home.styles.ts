@@ -120,6 +120,7 @@ export const createHomeStyles = (colors: ColorScheme) => {
     todoListContent: {
       paddingHorizontal: 24,
       paddingBottom: 100,
+      marginTop: 20,
     },
     emptyListContainer: {
       flexGrow: 1,
@@ -130,6 +131,7 @@ export const createHomeStyles = (colors: ColorScheme) => {
     },
     todoItem: {
       flexDirection: 'row',
+      gap: 20,
       alignItems: 'flex-start',
       padding: 20,
       borderRadius: 20,

@@ -1,15 +1,97 @@
 import { createSettingsStyles } from '@/assets/styles/settings.styles';
 import useTheme from '@/hooks/useTheme';
 import { Ionicons } from '@expo/vector-icons';
-import { StyleSheet, Text, TextInput, View } from 'react-native';
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Progress, ProgressFilledTrack } from '@/components/ui/progress';
 import { createHomeStyles } from '@/assets/styles/home.styles';
+
+interface Task {
+  id: number;
+  text: string;
+  isCompleted: boolean;
+}
+
+const tasks: Task[] = [
+  { id: 1, text: 'Learn Python', isCompleted: false },
+  { id: 2, text: 'Subscribe to Codesistency', isCompleted: true },
+  { id: 3, text: 'Learn React Native', isCompleted: false },
+];
 
 export default function Index() {
   const { colors } = useTheme();
   const styles = createSettingsStyles(colors);
   const hStyles = createHomeStyles(colors);
+
+  const renderItem = ({ item }: { item: Task }) => {
+    return (
+      <View style={hStyles.todoItemWrapper}>
+        <LinearGradient
+          colors={colors.gradients.surface}
+          style={hStyles.todoItem}
+        >
+          <TouchableOpacity>
+            <LinearGradient
+              colors={
+                item.isCompleted
+                  ? colors.gradients.success
+                  : colors.gradients.muted
+              }
+              style={[
+                hStyles.checkboxInner,
+                {
+                  borderColor: item.isCompleted ? 'transparent' : colors.border,
+                },
+              ]}
+            >
+              {item.isCompleted && (
+                <Ionicons name="checkmark" size={18} color="#fff" />
+              )}
+            </LinearGradient>
+          </TouchableOpacity>
+          <View style={hStyles.todoTextContainer}>
+            <Text
+              style={[
+                hStyles.todoText,
+                item.isCompleted && {
+                  textDecorationLine: 'line-through',
+                  color: colors.textMuted,
+                  opacity: 0.6,
+                },
+              ]}
+            >
+              {item.text}
+            </Text>
+            <View style={hStyles.todoActions}>
+              <TouchableOpacity activeOpacity={0.8}>
+                <LinearGradient
+                  colors={colors.gradients.warning}
+                  style={hStyles.actionButton}
+                >
+                  <Ionicons name="pencil" size={14} color="#fff" />
+                </LinearGradient>
+              </TouchableOpacity>
+              <TouchableOpacity activeOpacity={0.8}>
+                <LinearGradient
+                  colors={colors.gradients.danger}
+                  style={hStyles.actionButton}
+                >
+                  <Ionicons name="trash" size={14} color="#fff" />
+                </LinearGradient>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </LinearGradient>
+      </View>
+    );
+  };
 
   return (
     <LinearGradient
@@ -42,16 +124,6 @@ export default function Index() {
         </Text>
       </View>
       <View style={homeStyles.inputContainer}>
-        {/* <Input */}
-        {/*   variant="outline" */}
-        {/*   size="xl" */}
-        {/*   isDisabled={false} */}
-        {/*   isInvalid={false} */}
-        {/*   isReadOnly={false} */}
-        {/*   style={{ flex: 1 }} */}
-        {/* > */}
-        {/*   <InputField placeholder="Enter Text here..." /> */}
-        {/* </Input> */}
         <TextInput
           style={hStyles.input}
           placeholder="Enter todo here"
@@ -64,9 +136,13 @@ export default function Index() {
           <Ionicons name="add-outline" size={24} color={'#ffffff'} />
         </LinearGradient>
       </View>
-      {/* <TouchableOpacity onPress={() => toggleDarkMode()}> */}
-      {/*   <Text>Toggle Mode</Text> */}
-      {/* </TouchableOpacity> */}
+      <FlatList
+        style={hStyles.todoList}
+        data={tasks}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id.toString()}
+        contentContainerStyle={hStyles.todoListContent}
+      />
     </LinearGradient>
   );
 }
