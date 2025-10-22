@@ -12,23 +12,50 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { Progress, ProgressFilledTrack } from '@/components/ui/progress';
 import { createHomeStyles } from '@/assets/styles/home.styles';
+import React, { useEffect, useState } from 'react';
+import { useMutation, useQuery } from 'convex/react';
+import { api } from '@/convex/_generated/api';
+import LoadingComponent from '@/components/LoadingComponent';
 
 interface Task {
-  id: number;
+  _id: string;
   text: string;
   isCompleted: boolean;
 }
 
-const tasks: Task[] = [
-  { id: 1, text: 'Learn Python', isCompleted: false },
-  { id: 2, text: 'Subscribe to Codesistency', isCompleted: true },
-  { id: 3, text: 'Learn React Native', isCompleted: false },
-];
+// const tasks: Task[] = [
+//   { _id: 1, text: 'Learn Python', isCompleted: false },
+//   { _id: 2, text: 'Subscribe to Codesistency', isCompleted: true },
+//   { _id: 3, text: 'Learn React Native', isCompleted: false },
+// ];
 
 export default function Index() {
   const { colors } = useTheme();
   const styles = createSettingsStyles(colors);
   const hStyles = createHomeStyles(colors);
+  const [todoInput, setTodoInput] = useState('');
+  const addTodo = useMutation(api.todos.addTodos);
+  const listTodos = useQuery(api.todos.getTodos);
+
+  useEffect(() => {
+    console.log(listTodos);
+  }, [listTodos]);
+
+  const onChangeTodoText = (text: string) => {
+    setTodoInput(text);
+  };
+
+  const onSubmit = async () => {
+    setTodoInput('');
+    console.log(todoInput);
+    try {
+      const result = await addTodo({ text: todoInput });
+      console.log('Added todo successfuly');
+      console.log(result);
+    } catch (error) {
+      console.log('Error submitting todo: ', error);
+    }
+  };
 
   const renderItem = ({ item }: { item: Task }) => {
     return (
@@ -128,20 +155,28 @@ export default function Index() {
           style={hStyles.input}
           placeholder="Enter todo here"
           placeholderTextColor={colors.textMuted}
+          onChangeText={onChangeTodoText}
+          value={todoInput}
         />
         <LinearGradient
           colors={colors.gradients.muted}
           style={hStyles.addButton}
         >
-          <Ionicons name="add-outline" size={24} color={'#ffffff'} />
+          <Ionicons
+            name="add-outline"
+            size={24}
+            color={'#ffffff'}
+            onPress={onSubmit}
+          />
         </LinearGradient>
       </View>
       <FlatList
         style={hStyles.todoList}
-        data={tasks}
+        data={listTodos}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id.toString()}
+        keyExtractor={(item) => item._id}
         contentContainerStyle={hStyles.todoListContent}
+        ListEmptyComponent={<LoadingComponent />}
       />
     </LinearGradient>
   );
