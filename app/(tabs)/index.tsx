@@ -16,18 +16,14 @@ import React, { useEffect, useState } from 'react';
 import { useMutation, useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 import LoadingComponent from '@/components/LoadingComponent';
+import { Id } from '@/convex/_generated/dataModel';
 
 interface Task {
-  _id: string;
+  _id: Id<'todos'>;
+  _creationTime: number;
   text: string;
   isCompleted: boolean;
 }
-
-// const tasks: Task[] = [
-//   { _id: 1, text: 'Learn Python', isCompleted: false },
-//   { _id: 2, text: 'Subscribe to Codesistency', isCompleted: true },
-//   { _id: 3, text: 'Learn React Native', isCompleted: false },
-// ];
 
 export default function Index() {
   const { colors } = useTheme();
@@ -36,9 +32,11 @@ export default function Index() {
   const [todoInput, setTodoInput] = useState('');
   const addTodo = useMutation(api.todos.addTodos);
   const listTodos = useQuery(api.todos.getTodos);
+  const [todos, setTodos] = useState<Task[] | undefined>([]);
 
   useEffect(() => {
     console.log(listTodos);
+    setTodos(listTodos);
   }, [listTodos]);
 
   const onChangeTodoText = (text: string) => {
@@ -58,13 +56,25 @@ export default function Index() {
   };
 
   const renderItem = ({ item }: { item: Task }) => {
+    const onBtnPress = (item: Task) => {
+      if (todos) {
+        setTodos(
+          todos.map((todo) =>
+            todo._id === item._id
+              ? { ...todo, isCompleted: !todo.isCompleted }
+              : todo
+          )
+        );
+      }
+    };
+
     return (
       <View style={hStyles.todoItemWrapper}>
         <LinearGradient
           colors={colors.gradients.surface}
           style={hStyles.todoItem}
         >
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => onBtnPress(item)}>
             <LinearGradient
               colors={
                 item.isCompleted
@@ -172,7 +182,7 @@ export default function Index() {
       </View>
       <FlatList
         style={hStyles.todoList}
-        data={listTodos}
+        data={todos}
         renderItem={renderItem}
         keyExtractor={(item) => item._id}
         contentContainerStyle={hStyles.todoListContent}
