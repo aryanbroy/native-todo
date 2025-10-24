@@ -18,3 +18,10 @@ export const addTodos = mutation({
     return todoId;
   },
 });
+
+export const updateTodoCompletion = mutation({
+  args: { id: v.id('todos'), isCompleted: v.boolean() },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.id, { isCompleted: args.isCompleted });
+  },
+});

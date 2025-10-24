@@ -32,6 +32,7 @@ export default function Index() {
   const [todoInput, setTodoInput] = useState('');
   const addTodo = useMutation(api.todos.addTodos);
   const listTodos = useQuery(api.todos.getTodos);
+  const updateTodoCompletion = useMutation(api.todos.updateTodoCompletion);
   const [todos, setTodos] = useState<Task[] | undefined>([]);
 
   useEffect(() => {
@@ -56,7 +57,7 @@ export default function Index() {
   };
 
   const renderItem = ({ item }: { item: Task }) => {
-    const onBtnPress = (item: Task) => {
+    const onBtnPress = async (item: Task) => {
       if (todos) {
         setTodos(
           todos.map((todo) =>
@@ -65,6 +66,14 @@ export default function Index() {
               : todo
           )
         );
+
+        // check here for any improvement
+        await updateTodoCompletion({
+          id: item._id,
+          isCompleted: !item.isCompleted,
+        });
+
+        console.log('Update completed...');
       }
     };
 
