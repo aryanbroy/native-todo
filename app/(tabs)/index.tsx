@@ -34,6 +34,7 @@ export default function Index() {
   const listTodos = useQuery(api.todos.getTodos);
   const updateTodoCompletion = useMutation(api.todos.updateTodoCompletion);
   const [todos, setTodos] = useState<Task[] | undefined>([]);
+  const deleteTodo = useMutation(api.todos.deleteTodo);
 
   useEffect(() => {
     console.log(listTodos);
@@ -74,6 +75,19 @@ export default function Index() {
         });
 
         console.log('Update completed...');
+      }
+    };
+
+    // function onPressDeleteTodo(event: GestureResponderEvent): void {
+    //     throw new Error('Function not implemented.');
+    // }
+
+    const onPressDeleteTodo = async (item: Task) => {
+      if (todos) {
+        setTodos(todos.filter((todo) => todo._id !== item._id));
+        console.log('attempting to delete...');
+        await deleteTodo({ id: item._id });
+        console.log('deleted successfuly!');
       }
     };
 
@@ -124,7 +138,10 @@ export default function Index() {
                   <Ionicons name="pencil" size={14} color="#fff" />
                 </LinearGradient>
               </TouchableOpacity>
-              <TouchableOpacity activeOpacity={0.8}>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => onPressDeleteTodo(item)}
+              >
                 <LinearGradient
                   colors={colors.gradients.danger}
                   style={hStyles.actionButton}
